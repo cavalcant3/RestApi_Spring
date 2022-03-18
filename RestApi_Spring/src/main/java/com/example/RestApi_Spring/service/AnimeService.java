@@ -1,5 +1,6 @@
 package com.example.RestApi_Spring.service;
 
+import com.example.RestApi_Spring.domain.Anime;
 import org.apache.catalina.LifecycleState;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

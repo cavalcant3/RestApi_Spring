@@ -1,5 +1,7 @@
 package com.example.RestApi_Spring.controller;
 
+import com.example.RestApi_Spring.Requests.AnimePostRequestBody;
+import com.example.RestApi_Spring.Requests.AnimePutRequestBody;
 import com.example.RestApi_Spring.domain.Anime;
 import com.example.RestApi_Spring.service.AnimeService;
 import com.example.RestApi_Spring.util.DateUtil;
@@ -30,12 +32,12 @@ public class AnimeController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Anime> findById(@PathVariable long id){
-        return ResponseEntity.ok(animeService.findById(id));
+        return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestExecption(id));
     }
     @PostMapping
-    public ResponseEntity<Anime> save(@RequestBody Anime anime){
+    public ResponseEntity<Anime> save(@RequestBody AnimePostRequestBody animePostRequestBody){
 
-        return new ResponseEntity<>(animeService.save(anime), HttpStatus.OK);
+        return new ResponseEntity<>(animeService.save(animePostRequestBody), HttpStatus.CREATED);
     }
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id){
@@ -44,8 +46,9 @@ public class AnimeController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> replace(@RequestBody Anime anime) {
-        animeService.replace(anime);
+    public ResponseEntity<Void> replace(@RequestBody AnimePutRequestBody animePutRequestBody) {
+        animeService.replace(animePutRequestBody);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

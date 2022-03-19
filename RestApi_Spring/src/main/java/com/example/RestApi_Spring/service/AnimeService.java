@@ -1,46 +1,49 @@
 package com.example.RestApi_Spring.service;
 
+import com.example.RestApi_Spring.Requests.AnimePostRequestBody;
+import com.example.RestApi_Spring.Requests.AnimePutRequestBody;
 import com.example.RestApi_Spring.domain.Anime;
+import com.example.RestApi_Spring.repository.AnimeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
+@RequiredArgsConstructor
 public class AnimeService {
-    private static List<Anime> animes;
-    static {
-        animes = new ArrayList<>(List.of(new Anime(1L, "Boku No Hero"), new Anime(2L, "Berserk")));
+    private final AnimeRepository animeRepository;
+
+    //  private final AnimeRepository animeRepository
+    public List<Anime> listAll() {
+        return animeRepository.findAll();
     }
 
-//  private final AnimeRepository animeRepository
-    public List<Anime> listAll(){
-        return animes;
-    }
+    public Anime findByIdOrThrowBadRequestExecption(long id) {
+        return animeRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found"));
 
-    public Anime findById(long id){
-        return animes.stream() .filter(anime -> anime.getId()==id)
-                .findFirst()
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Anime not found"));
 
     }
 
-    public Anime save(Anime anime) {
-        anime.setId(ThreadLocalRandom.current().nextLong(3,1000));
-        animes.add(anime);
-        return anime;
+    public Anime save(AnimePostRequestBody animePostRequestBody) {
+
+
+        return animeRepository.save(Anime.builder().name(animePostRequestBody.getName()).build());
     }
 
     public void delete(long id) {
-      animes.remove(findById(id));
+        animeRepository.delete(findByIdOrThrowBadRequestExecption(id));
     }
 
-    public void replace(Anime anime) {
-        delete(anime.getId());
-//        ou animes.add(anime)
-        save(anime);
+    public void replace(AnimePutRequestBody animePutRequestBody) {
+//        ou posso criar uma variavel pra armazenar o id dessa verificação e salvar ela no repository
+        findByIdOrThrowBadRequestExecption(animePutRequestBody.getId());
+        Anime anime = Anime.builder()
+                .id(animePutRequestBody.getId())
+                .name(animePutRequestBody.getName()).build();
+       animeRepository.save(anime);
     }
 }

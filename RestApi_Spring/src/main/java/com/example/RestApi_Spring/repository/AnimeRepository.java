@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface AnimeRepository extends JpaRepository<Anime, Long> {
 
+//    exemplo de método para o banco
     List<Anime> findByName(String name);
 }

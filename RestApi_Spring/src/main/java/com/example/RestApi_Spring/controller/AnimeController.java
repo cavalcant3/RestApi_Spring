@@ -33,7 +33,10 @@ public class AnimeController {
         return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestExecption(id));
     }
 
+
     @GetMapping(path = "/find")
+//    Request param recebe o nome e se testa com "/find?name=exemplodeNomeAqui"
+//    Ele é responsável por esse papel porque path variable daria ambiguidade no projeto
     public ResponseEntity<List<Anime>> findByName(@RequestParam(required = false) String name) {
         return ResponseEntity.ok(animeService.findByName(name));
     }
